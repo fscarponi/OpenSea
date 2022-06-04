@@ -54,7 +54,7 @@ android {
         }
     }
 }
-val composeVersion: String by project
+val mapForgeVersion: String by project
 dependencies {
 
 
@@ -72,6 +72,20 @@ dependencies {
 
 
     // maps
-    implementation("com.google.maps.android:maps-compose:2.2.0")
-    implementation("com.google.android.gms:play-services-maps:18.0.2")
+    implementation("org.mapsforge:mapsforge-core:$mapForgeVersion")
+    implementation("org.mapsforge:mapsforge-map:$mapForgeVersion")
+    implementation("org.mapsforge:mapsforge-map-reader:$mapForgeVersion")
+    implementation("org.mapsforge:mapsforge-themes:$mapForgeVersion")
+    implementation("net.sf.kxml:kxml2:2.3.0")
+
+    implementation("org.mapsforge:mapsforge-map-android:$mapForgeVersion")
+    implementation("com.caverock:androidsvg:1.4")
+
+    //maps poi
+    implementation("org.mapsforge:mapsforge-poi-android:$mapForgeVersion")
+    implementation("org.mapsforge:sqlite-android:$mapForgeVersion")
+    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-armeabi-v7a")
+    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-arm64-v8a")
+    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86")
+    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86_64")
 }
