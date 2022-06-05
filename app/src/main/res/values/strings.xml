@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Open Sea</string>
+    <string name="map_chooser_title">Seleziona File Mappa</string>
 </resources>
