@@ -1,27 +1,28 @@
 package it.fscarponi.opensea
 
-import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.Home
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import it.fscarponi.opensea.di.DIModules
 import it.fscarponi.opensea.ui.theme.OpenSeaTheme
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.compose.rememberInstance
+import org.kodein.di.compose.withDI
+import org.kodein.di.instance
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -32,14 +33,13 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
 
-class MainActivity : ComponentActivity() {
-    private val viewModel = OpenSeaMapViewModel()
+class MainActivity : ComponentActivity(), DIAware {
 
-    init {
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            viewModel.mapUri = uri
-        }
+    override val di: DI = DI.lazy {
+        import(DIModules.viewModels)
     }
+
+    private val viewModel: OpenSeaMapViewModel by instance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,14 +49,15 @@ class MainActivity : ComponentActivity() {
 
             OpenSeaTheme {
                 // A surface container using the "background" color from the theme
-                NavHost(navController = navController, startDestination = "HOME"){
-                    composable("HOME"){ OpenSeaMap() }
-                    composable("USER"){ }
-                    composable("MAP_DOWNLOADER"){ }
+                NavHost(navController = navController, startDestination = "HOME") {
+                    composable("HOME") {
+                        OpenSeaMap(viewModel = viewModel, navController = navController)
+                    }
+                    composable("USER") { }
+                    composable("mapDownload") { withDI(di = di) { MapDownloader(navController) } }
                 }
             }
         }
-
     }
 
 
@@ -64,22 +65,20 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel()) {
+fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel(), navController: NavHostController) {
     if (viewModel.mapUri != null) {
-        MapView(LocalContext.current).apply {
-            mapScaleBar.isVisible = true;
-            setBuiltInZoomControls(true);
-
+        MapView(LocalContext.current).also {
+            it.mapScaleBar.isVisible = true
+            it.setBuiltInZoomControls(true)
             /*
              * To avoid redrawing all the tiles all the time, we need to set up a tile cache with an
              * utility method.
              */
             val tileCache = AndroidUtil.createTileCache(
                 LocalContext.current, "mapcache",
-                model.displayModel.tileSize, 1f,
-                model.frameBufferModel.overdrawFactor
+                it.model.displayModel.tileSize, 1f,
+                it.model.frameBufferModel.overdrawFactor
             )
-
             /*
              * Now we need to set up the process of displaying a map. A map can have several layers,
              * stacked on top of each other. A layer can be a map or some visual elements, such as
@@ -89,29 +88,66 @@ fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel()) {
              * appearance of the map.
              */
             val fis = LocalContext.current.contentResolver.openInputStream(viewModel.mapUri!!) as FileInputStream
-            val mapDataStore = MapFile(fis);
+            val mapDataStore = MapFile(fis)
             val tileRendererLayer = TileRendererLayer(
                 tileCache, mapDataStore,
-                model.mapViewPosition, AndroidGraphicFactory.INSTANCE
-            );
-            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+                it.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
+            )
+            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
 
             /*
              * On its own a tileRendererLayer does not know where to display the map, so we need to
              * associate it with our mapView.
              */
-            layerManager.layers.add(tileRendererLayer);
+            it.layerManager.layers.add(tileRendererLayer)
 
             /*
              * The map also needs to know which area to display and at what zoom level.
              * Note: this map position is specific to Berlin area.
              */
-            setCenter(LatLong(42.566667, 14.1));
-            setZoomLevel(12);
+            it.setCenter(LatLong(42.566667, 14.1))
+            it.setZoomLevel(12)
         }
     } else {
-        Text("no map found")
-        val navController = rememberNavController()
+        Column() {
+            Text("no map found")
+            Button(onClick = { navController.navigate("mapDownload") }) {
+                Text("Download MAP")
+            }
+        }
+    }
+}
+
+@Composable
+fun MapDownloader(navController: NavHostController) {
+    val openSeaMapViewModel: OpenSeaMapViewModel by rememberInstance()
+
+    var uri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val chooser = rememberLauncherForActivityResult(
+        contract =
+        ActivityResultContracts.GetContent()
+    ) {
+        openSeaMapViewModel.mapUri = it
+        uri = it
+    }
+    Column {
+        Text("Map download not yet implemented, load map from devices")
+        TextButton(onClick = {
+            chooser.launch("*/*")
+        }) {
+            Text("CHOOSE")
+        }
+        if (uri != null) {
+            Text(uri.toString())
+            TextButton(onClick = {
+                println(openSeaMapViewModel.mapUri)
+                navController.navigate("HOME")
+            }) {
+                Text("BACK TO MAP")
+            }
+        }
     }
 }
 

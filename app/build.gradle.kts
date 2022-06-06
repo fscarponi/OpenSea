@@ -90,4 +90,11 @@ dependencies {
     implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-arm64-v8a")
     implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86")
     implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86_64")
+
+    // PEKO (permissions)
+    implementation("com.markodevcic:peko:2.1.3")
+
+    //kodein
+    implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
+
 }
