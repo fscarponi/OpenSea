@@ -70,6 +70,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     testImplementation("androidx.compose.ui:ui-test:1.2.0-beta03")
 
+    implementation("androidx.navigation:navigation-compose:2.4.2")
+
 
     // maps
     implementation("org.mapsforge:mapsforge-core:$mapForgeVersion")

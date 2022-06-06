@@ -16,7 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import it.fscarponi.opensea.ui.theme.OpenSeaTheme
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -41,44 +45,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            val navController = rememberNavController()
 
             OpenSeaTheme {
                 // A surface container using the "background" color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    OpenSeaMap(viewModel)
-                }
-                Button(onClick = {
-
-                    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-                    { result: ActivityResult ->
-                        if (result.resultCode == Activity.RESULT_OK) {
-                            //  you will get result here in result.data
-                        }
-
-                    }
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-
-
-// Always use string resources for UI text.
-// This says something like "Share this photo with"
-// Create intent to show chooser
-                    val chooser = Intent(Intent.ACTION_GET_CONTENT).apply {
-                        type = "*/*"
-                    }
-// Try to invoke the intent.
-
-                    try {
-                        startActivity(chooser)
-                    } catch (e: ActivityNotFoundException) {
-                        e.printStackTrace()
-                    }
-
-                }) {
-                    Text(text = "Select Map")
+                NavHost(navController = navController, startDestination = "HOME"){
+                    composable("HOME"){ OpenSeaMap() }
+                    composable("USER"){ }
+                    composable("MAP_DOWNLOADER"){ }
                 }
             }
-
         }
 
     }
@@ -135,6 +111,41 @@ fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel()) {
         }
     } else {
         Text("no map found")
+        val navController = rememberNavController()
     }
-
 }
+
+//
+//    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+//        OpenSeaMap(viewModel)
+//    }
+//    Button(onClick = {
+//
+//        val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+//        { result: ActivityResult ->
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                //  you will get result here in result.data
+//            }
+//
+//        }
+//        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+//
+//
+//// Always use string resources for UI text.
+//// This says something like "Share this photo with"
+//// Create intent to show chooser
+//        val chooser = Intent(Intent.ACTION_GET_CONTENT).apply {
+//            type = "*/*"
+//        }
+//// Try to invoke the intent.
+//
+//        try {
+//            startActivity(chooser)
+//        } catch (e: ActivityNotFoundException) {
+//            e.printStackTrace()
+//        }
+//
+//    }) {
+//        Text(text = "Select Map")
+//    }
+//}
