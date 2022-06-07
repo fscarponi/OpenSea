@@ -1,5 +1,6 @@
 package it.fscarponi.opensea
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,14 +24,9 @@ import org.kodein.di.DIAware
 import org.kodein.di.compose.rememberInstance
 import org.kodein.di.compose.withDI
 import org.kodein.di.instance
-import org.mapsforge.core.model.LatLong
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory
-import org.mapsforge.map.android.util.AndroidUtil
-import org.mapsforge.map.android.view.MapView
-import org.mapsforge.map.layer.renderer.TileRendererLayer
-import org.mapsforge.map.reader.MapFile
-import org.mapsforge.map.rendertheme.InternalRenderTheme
-import java.io.FileInputStream
+import ovh.plrapps.mapcompose.core.TileStreamProvider
+import ovh.plrapps.mapcompose.ui.MapUI
+import java.io.InputStream
 
 
 class MainActivity : ComponentActivity(), DIAware {
@@ -58,56 +54,27 @@ class MainActivity : ComponentActivity(), DIAware {
                 }
             }
         }
-    }
 
+    }
+}
+
+class OpenSeaTileStreamProvider(private val context: Context, private val mapUri: Uri) : TileStreamProvider {
+
+    override suspend fun getTileStream(row: Int, col: Int, zoomLvl: Int): InputStream? {
+        return mapUri.let { https://c.tile.openstreetmap.org/11/1104/754.png }
+    }
 
 }
 
 
 @Composable
 fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel(), navController: NavHostController) {
+
     if (viewModel.mapUri != null) {
-        MapView(LocalContext.current).also {
-            it.mapScaleBar.isVisible = true
-            it.setBuiltInZoomControls(true)
-            /*
-             * To avoid redrawing all the tiles all the time, we need to set up a tile cache with an
-             * utility method.
-             */
-            val tileCache = AndroidUtil.createTileCache(
-                LocalContext.current, "mapcache",
-                it.model.displayModel.tileSize, 1f,
-                it.model.frameBufferModel.overdrawFactor
-            )
-            /*
-             * Now we need to set up the process of displaying a map. A map can have several layers,
-             * stacked on top of each other. A layer can be a map or some visual elements, such as
-             * markers. Here we only show a map based on a mapsforge map file. For this we need a
-             * TileRendererLayer. A TileRendererLayer needs a TileCache to hold the generated map
-             * tiles, a map file from which the tiles are generated and Rendertheme that defines the
-             * appearance of the map.
-             */
-            val fis = LocalContext.current.contentResolver.openInputStream(viewModel.mapUri!!) as FileInputStream
-            val mapDataStore = MapFile(fis)
-            val tileRendererLayer = TileRendererLayer(
-                tileCache, mapDataStore,
-                it.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
-            )
-            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
-
-            /*
-             * On its own a tileRendererLayer does not know where to display the map, so we need to
-             * associate it with our mapView.
-             */
-            it.layerManager.layers.add(tileRendererLayer)
-
-            /*
-             * The map also needs to know which area to display and at what zoom level.
-             * Note: this map position is specific to Berlin area.
-             */
-            it.setCenter(LatLong(42.566667, 14.1))
-            it.setZoomLevel(12)
-        }
+        viewModel.setTileStreamProvider(
+            OpenSeaTileStreamProvider( LocalContext.current, viewModel.mapUri!!)
+        )
+        MapUI(state = viewModel.state)
     } else {
         Column() {
             Text("no map found")
@@ -150,38 +117,3 @@ fun MapDownloader(navController: NavHostController) {
         }
     }
 }
-
-//
-//    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-//        OpenSeaMap(viewModel)
-//    }
-//    Button(onClick = {
-//
-//        val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-//        { result: ActivityResult ->
-//            if (result.resultCode == Activity.RESULT_OK) {
-//                //  you will get result here in result.data
-//            }
-//
-//        }
-//        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-//
-//
-//// Always use string resources for UI text.
-//// This says something like "Share this photo with"
-//// Create intent to show chooser
-//        val chooser = Intent(Intent.ACTION_GET_CONTENT).apply {
-//            type = "*/*"
-//        }
-//// Try to invoke the intent.
-//
-//        try {
-//            startActivity(chooser)
-//        } catch (e: ActivityNotFoundException) {
-//            e.printStackTrace()
-//        }
-//
-//    }) {
-//        Text(text = "Select Map")
-//    }
-//}

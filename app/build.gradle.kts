@@ -80,16 +80,7 @@ dependencies {
     implementation("org.mapsforge:mapsforge-themes:$mapForgeVersion")
     implementation("net.sf.kxml:kxml2:2.3.0")
 
-    implementation("org.mapsforge:mapsforge-map-android:$mapForgeVersion")
-    implementation("com.caverock:androidsvg:1.4")
-
-    //maps poi
-    implementation("org.mapsforge:mapsforge-poi-android:$mapForgeVersion")
-    implementation("org.mapsforge:sqlite-android:$mapForgeVersion")
-    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-armeabi-v7a")
-    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-arm64-v8a")
-    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86")
-    implementation("org.mapsforge:sqlite-android:$mapForgeVersion:natives-x86_64")
+    implementation ("ovh.plrapps:mapcompose:2.1.0")
 
     // PEKO (permissions)
     implementation("com.markodevcic:peko:2.1.3")
