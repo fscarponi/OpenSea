@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity(), DIAware {
     }
 
     private val viewModel: OpenSeaMapViewModel by instance()
+    private val repo: OpenSeaRepository by instance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity(), DIAware {
                 // A surface container using the "background" color from the theme
                 NavHost(navController = navController, startDestination = "HOME") {
                     composable("HOME") {
-                        OpenSeaMap(viewModel = viewModel, navController = navController)
+                        OpenSeaMap(viewModel = viewModel, navController = navController, repo)
                     }
                     composable("USER") { }
                     composable("mapDownload") { withDI(di = di) { MapDownloader(navController) } }
@@ -58,21 +59,21 @@ class MainActivity : ComponentActivity(), DIAware {
     }
 }
 
-class OpenSeaTileStreamProvider(private val context: Context, private val mapUri: Uri) : TileStreamProvider {
+class OpenSeaTileStreamProvider(private val context: Context, private val mapUri: Uri, private val repo: OpenSeaRepository) : TileStreamProvider {
 
     override suspend fun getTileStream(row: Int, col: Int, zoomLvl: Int): InputStream? {
-        return mapUri.let { https://c.tile.openstreetmap.org/11/1104/754.png }
+        return repo.getTileStream(row, col, zoomLvl)
     }
 
 }
 
 
 @Composable
-fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel(), navController: NavHostController) {
+fun OpenSeaMap(viewModel: OpenSeaMapViewModel = OpenSeaMapViewModel(), navController: NavHostController, repository: OpenSeaRepository) {
 
     if (viewModel.mapUri != null) {
         viewModel.setTileStreamProvider(
-            OpenSeaTileStreamProvider( LocalContext.current, viewModel.mapUri!!)
+            OpenSeaTileStreamProvider(LocalContext.current, viewModel.mapUri!!, repository)
         )
         MapUI(state = viewModel.state)
     } else {

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ovh.plrapps.mapcompose.api.addLayer
 import ovh.plrapps.mapcompose.api.enableRotation
+import ovh.plrapps.mapcompose.api.maxScale
 import ovh.plrapps.mapcompose.core.TileStreamProvider
 import ovh.plrapps.mapcompose.ui.state.MapState
 
@@ -19,6 +20,8 @@ class OpenSeaMapViewModel {
             scroll(0.5, 0.5)
         }.apply {
             enableRotation()
+            maxScale=20f
+
         }
     )
 

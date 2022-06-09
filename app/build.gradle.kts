@@ -55,6 +55,7 @@ android {
     }
 }
 val mapForgeVersion: String by project
+val ktor_version: String by project
 dependencies {
 
 
@@ -87,5 +88,8 @@ dependencies {
 
     //kodein
     implementation("org.kodein.di:kodein-di-framework-compose:7.9.0")
+    //KTOR
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
 
 }
