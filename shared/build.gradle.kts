@@ -11,7 +11,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -26,6 +26,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 // Common dependencies
+                implementation("io.insert-koin:koin-core:3.2.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
         val commonTest by getting {
