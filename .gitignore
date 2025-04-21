@@ -43,3 +43,28 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Android ###
+local.properties
+captures/
+.externalNativeBuild
+.cxx
+
+### iOS ###
+xcuserdata/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+*.xcscmblueprint
+*.mobileprovision
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+### KMM ###
+iosApp/Pods/
+iosApp/Podfile.lock
+shared/build/
+androidApp/build/
