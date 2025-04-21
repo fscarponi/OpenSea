@@ -1,0 +1,1 @@
+As an attachment, you can find my project plan. Please split the plan into smaller sub-steps to allow for simpler iteration. Add these steps into the prompt's project folder, naming the related files using a short summary as the filename. Prefix each filename with a number to indicate the order in which the steps should be followed.
