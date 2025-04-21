@@ -38,6 +38,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 // Android-specific dependencies
+                implementation("org.maplibre.gl:maplibre-sdk:9.5.0")
             }
         }
         val androidUnitTest by getting

@@ -1,5 +1,7 @@
 package it.fscarponi.opensea.di
 
+import it.fscarponi.opensea.data.repository.MapRepositoryImpl
+import it.fscarponi.opensea.domain.repository.MapRepository
 import it.fscarponi.opensea.domain.usecase.GetCurrentLocationUseCase
 import it.fscarponi.opensea.presentation.viewmodel.LocationViewModel
 import org.koin.core.context.startKoin
@@ -21,7 +23,8 @@ object KoinModule {
      * Data module containing repositories and data sources.
      */
     val dataModule = module {
-        // Will be implemented later with actual repository implementations
+        // Map repository
+        single<MapRepository> { MapRepositoryImpl(get()) }
     }
 
     /**
