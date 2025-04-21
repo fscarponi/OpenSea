@@ -6,13 +6,13 @@ Set up the basic Kotlin Multiplatform Mobile (KMM) project structure and configu
 ## Tasks
 
 ### 1.1 Environment Setup
-- Install Android Studio with Kotlin Multiplatform Mobile plugin
-- Install Xcode (for iOS development)
+- Install Kotlin Multiplatform Mobile plugin for IntelliJ IDEA
 - Install necessary SDKs and dependencies
-- Configure Git repository
+- Note: Xcode is already installed
+- Note: Git repository is already configured
 
-### 1.2 Create KMM Project
-- Create a new KMM project using Android Studio
+### 1.2 Configure KMM Project
+- Configure the current project for KMM development
 - Configure project name and package structure
 - Set up the shared module for cross-platform code
 - Configure build.gradle files for all modules
@@ -28,10 +28,10 @@ Set up the basic Kotlin Multiplatform Mobile (KMM) project structure and configu
   - iosMain for iOS-specific implementations
 - Create placeholder files to maintain directory structure
 
-### 1.4 Version Control Setup
-- Initialize Git repository (if not done already)
-- Create .gitignore file with appropriate entries for Kotlin, Android, and iOS
-- Make initial commit with basic project structure
+### 1.4 Version Control Management
+- Note: Git repository is already initialized
+- Update .gitignore file with any additional entries needed for KMM development
+- Commit changes to the project structure after KMM configuration
 
 ## Expected Outcome
 A properly configured KMM project with the basic directory structure in place, ready for architecture setup and dependency configuration.
