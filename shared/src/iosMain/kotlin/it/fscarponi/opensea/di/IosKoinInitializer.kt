@@ -1,5 +1,7 @@
 package it.fscarponi.opensea.di
 
+import it.fscarponi.opensea.domain.location.IOSLocationService
+import it.fscarponi.opensea.domain.location.LocationService
 import it.fscarponi.opensea.presentation.navigation.IosNavigator
 import it.fscarponi.opensea.util.IosLogger
 import org.koin.core.module.Module
@@ -14,6 +16,9 @@ object IosKoinInitializer {
      */
     fun iosModule(): Module = module {
         single { IosNavigator.create() }
+
+        // Location service
+        single<LocationService> { IOSLocationService() }
     }
 
     /**
@@ -22,7 +27,7 @@ object IosKoinInitializer {
     fun init() {
         // Initialize the logger
         IosLogger.init()
-        
+
         // Initialize Koin with all modules
         KoinModule.initKoin(listOf(iosModule()))
     }

@@ -1,5 +1,6 @@
 package it.fscarponi.opensea.domain.usecase
 
+import it.fscarponi.opensea.domain.location.model.Location
 import it.fscarponi.opensea.domain.model.Result
 import it.fscarponi.opensea.domain.repository.LocationRepository
 
@@ -8,14 +9,14 @@ import it.fscarponi.opensea.domain.repository.LocationRepository
  */
 class GetCurrentLocationUseCase(
     private val locationRepository: LocationRepository
-) : NoParamUseCase<Pair<Double, Double>>() {
-    
+) : NoParamUseCase<Location>() {
+
     /**
      * Gets the current location.
      *
-     * @return A Result containing the current location coordinates (latitude, longitude) or an error.
+     * @return A Result containing the current location or an error.
      */
-    override suspend fun invoke(): Result<Pair<Double, Double>> {
+    override suspend fun invoke(): Result<Location> {
         return locationRepository.getCurrentLocation()
     }
 }

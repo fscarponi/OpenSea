@@ -1,6 +1,9 @@
 package it.fscarponi.opensea.di
 
+import it.fscarponi.opensea.data.repository.LocationRepositoryImpl
 import it.fscarponi.opensea.data.repository.MapRepositoryImpl
+import it.fscarponi.opensea.domain.location.LocationService
+import it.fscarponi.opensea.domain.repository.LocationRepository
 import it.fscarponi.opensea.domain.repository.MapRepository
 import it.fscarponi.opensea.domain.usecase.GetCurrentLocationUseCase
 import it.fscarponi.opensea.presentation.viewmodel.LocationViewModel
@@ -25,13 +28,16 @@ object KoinModule {
     val dataModule = module {
         // Map repository
         single<MapRepository> { MapRepositoryImpl(get()) }
+
+        // Location repository
+        single<LocationRepository> { LocationRepositoryImpl(get()) }
     }
 
     /**
      * Presentation module containing ViewModels.
      */
     val presentationModule = module {
-        factory { LocationViewModel(get()) }
+        factory { LocationViewModel(get(), get()) }
     }
 
     /**
