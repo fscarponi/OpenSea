@@ -2,11 +2,15 @@ package it.fscarponi.opensea.di
 
 import it.fscarponi.opensea.data.repository.LocationRepositoryImpl
 import it.fscarponi.opensea.data.repository.MapRepositoryImpl
+import it.fscarponi.opensea.data.repository.MarkerRepositoryImpl
 import it.fscarponi.opensea.domain.location.LocationService
+import it.fscarponi.opensea.domain.map.MapController
 import it.fscarponi.opensea.domain.repository.LocationRepository
 import it.fscarponi.opensea.domain.repository.MapRepository
+import it.fscarponi.opensea.domain.repository.MarkerRepository
 import it.fscarponi.opensea.domain.usecase.GetCurrentLocationUseCase
 import it.fscarponi.opensea.presentation.viewmodel.LocationViewModel
+import it.fscarponi.opensea.presentation.viewmodel.NavigationViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -31,6 +35,9 @@ object KoinModule {
 
         // Location repository
         single<LocationRepository> { LocationRepositoryImpl(get()) }
+
+        // Marker repository
+        single<MarkerRepository> { MarkerRepositoryImpl(get()) }
     }
 
     /**
@@ -38,6 +45,7 @@ object KoinModule {
      */
     val presentationModule = module {
         factory { LocationViewModel(get(), get()) }
+        factory { NavigationViewModel(get(), get(), get()) }
     }
 
     /**

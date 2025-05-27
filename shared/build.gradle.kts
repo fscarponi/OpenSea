@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("org.jetbrains.compose") version "1.5.0"
 }
 
 kotlin {
@@ -28,6 +29,12 @@ kotlin {
                 // Common dependencies
                 implementation("io.insert-koin:koin-core:3.2.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+                // Compose Multiplatform
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
             }
         }
         val commonTest by getting {
@@ -39,6 +46,11 @@ kotlin {
             dependencies {
                 // Android-specific dependencies
                 implementation("org.maplibre.gl:maplibre-sdk:9.5.0")
+
+                // Android Compose
+                implementation("androidx.compose.ui:ui:1.4.3")
+                implementation("androidx.compose.material:material:1.4.3")
+                implementation("androidx.compose.ui:ui-tooling:1.4.3")
             }
         }
         val androidUnitTest by getting
@@ -52,6 +64,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 // iOS-specific dependencies
+                implementation(compose.uikit)
             }
         }
         val iosX64Test by getting
